@@ -1,8 +1,18 @@
-def rotate(en3,point,v,a = Math::PI / 4)
+def rotate(en3,point,v,a = Math::PI / 2)
 ents = Sketchup.active_model.entities
 tr = Geom::Transformation.rotation(point,v,a)
-ents.transform_entities tr, en3
-UI.start_timer(1, false) { ents.transform_entities tr, en3;en3.explode }
+#ents.transform_entities tr, en3
+#UI.start_timer(1, false) { ents.transform_entities tr, en3;en3.explode }
+
+view = Sketchup.active_model.active_view
+number_of_frames = 500
+angle_change = a / number_of_frames.to_f
+rotform = Geom::Transformation.rotation( point, v, angle_change )
+number_of_frames.times do
+  en3.move! rotform * en3.transformation
+  view.refresh
+end
+en3.explode
 end
 #v represent which dirction to rotate while one is plus toward big than 0 face deside which face to rotate in the same axis
 def rotate_more(v,face)
@@ -50,10 +60,12 @@ groups.each{|g|
 }
 return group
 end
+l = [[0,0,1],[1,0,0]]
 i = 0
-#while i < 2
-rotate_more([0,0,1],-1)
-#i = i + 1
-#end
+while i < 2
+rotate_more(l[i],-1)
+i = i + 1
+end
+
 
 
