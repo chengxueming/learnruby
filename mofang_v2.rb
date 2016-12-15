@@ -60,12 +60,58 @@ groups.each{|g|
 }
 return group
 end
-l = [[0,0,1],[1,0,0]]
+
+F = "F"
+R = "R"
+L = "L"
+B = "B"
+U = "U"
+D = "D"
+@str = ""
+def randmofang(times)
+l = [[0,0,1],[1,0,0],[0,1,0],[0,0,-1],[-1,0,0],[0,-1,0]]
 i = 0
-while i < 2
-rotate_more(l[i],-1)
+while i < times do
+out = ""
+x = rand(6)
+y = rand(2)
+@str += getCommand(x,y) + " "
+rotate_more(l[x],y)
 i = i + 1
 end
+end
+
+def getCommand(x,y)
+l = [[0,0,1],[1,0,0],[0,1,0],[0,0,-1],[-1,0,0],[0,-1,0]]
+out = ""
+if x == 0 or x - 3 == 0
+	if y == 1
+	out = U 
+	else
+	out = D
+	end
+elsif x == 1 or x - 3 == 1
+	if y == 1
+	out = R
+	else
+	out = L
+	end
+elsif x == 2 or x - 3 == 2
+	if y == 1
+	out = B
+else
+	out = F
+end
+end
+
+if x >= 3
+	out += "'"
+end
+return out
+end
+
+randmofang(5)
+Sketchup.active_model.add_note(@str,0.01,0.02)
 
 
 
