@@ -33,5 +33,12 @@ D = "D"
 # 	out += "'"
 # end
 # puts out
-i = 1
-puts i / 100.0
+# i = 1
+# puts i / 100.0
+10.downto 1 do |ele|
+puts ele
+end 
+
+# for ele in (3...-1).reverse!
+# 	puts ele
+# end

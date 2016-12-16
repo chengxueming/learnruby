@@ -11,11 +11,11 @@ B = "B"
 U = "U"
 D = "D"
 @maps = {F=>[[1,2,3,4,5,6,7,8,9],"URDL"],
-        R=>[[21,22,23,24,25,26,27,28,29],"UBDF"],
-        L=>[[31,32,33,34,35,36,37,38,39],"UFDB"],
-        B=>[[41,42,43,44,45,46,47,48,49],"ULDR"],
-        U=>[[51,52,53,54,55,56,57,58,59],"BRFL"],
-        D=>[[61,62,63,64,65,66,67,68,69],"FRBL"],}
+        R=>[[11,12,13,14,15,16,17,18,19],"UBDF"],
+        L=>[[21,22,23,24,25,26,27,28,29],"UFDB"],
+        B=>[[31,32,33,34,35,36,37,38,39],"ULDR"],
+        U=>[[41,42,43,44,45,46,47,48,49],"BRFL"],
+        D=>[[51,52,53,54,55,56,57,58,59],"FRBL"],}
 
 
 def set(face, bar,new)
@@ -31,9 +31,9 @@ def set(face, bar,new)
     elsif index == 2
         l[0][6,9] = new
     elsif index == 3
-        l[0][2] = new[0]
-    	l[0][5] = new[1]
-    	l[0][8] = new[2]
+        l[0][0] = new[0]
+    	l[0][3] = new[1]
+    	l[0][6] = new[2]
 end
 end
 
@@ -68,16 +68,36 @@ end
 #             set(m[face][1][i],face,last)
 #             break
 #         set(m[face][1][i], face, get(m[face][1][i-1],face))
+ROW = 3
+COL = 3
+def rotate(a)
+    for row in (0...ROW)
+        for col in (row...ROW)
+            a[row*COL + col],a[col*COL + row] = a[col*COL + row],a[row*COL + col]
+        end
+    end
+    a.reverse!
+    a[0...3],a[6...9] = a[6...9],a[0...3]
+end
+def rotate_r(a)
+    for row in (0...ROW)
+        for col in (row...ROW)
+            a[row*COL + col],a[col*COL + row] = a[col*COL + row],a[row*COL + col]
+        end
+    end
+    a[0...3],a[6...9] = a[6...9],a[0...3]
+end
+
 def roate_other(face,m)
     last = get(m[face][1][3],face)
-    for i in (3...-1)
+    3.downto 0 do |i|
         if i ==  0
             #print(m[face][1][0]," ",m[face][1][3])
             set(m[face][1][i],face,last)
         else
         set(m[face][1][i], face, get(m[face][1][i-1],face))
+        end
     end
-end
 end
 def roate_other_r(face,m)
     first = get(m[face][1][0], face)
@@ -92,6 +112,16 @@ def roate_other_r(face,m)
     }
 end
 
+def rotate_face(m,face,clock = true)
+    if clock
+        rotate(m[face][0])
+        roate_other(face,m)
+    else
+        rotate_r(m[face][0])
+        roate_other_r(face,m)
+    end
+end
+
 
    #  [0...3].each{|i|
    #      if i == 3
@@ -102,5 +132,19 @@ end
    #      puts @maps[F][0][i]
    #  end
    #  }
-roate_other("F",@maps)
-puts @maps
+colors = ["yellow","blue","red","green","white","orange"]
+l = "F D U B B R".split(" ")
+l.each{|b|
+    clock = true
+    clock = false if b[1] == "'"
+    puts b[0]+" "+clock.to_s
+    rotate_face(@maps,b[0],clock)
+}
+# rotate_face(@maps,F,true)
+#set(F,U,[111,222,333])
+#roate_other(F,@maps)
+#puts get(R,F)
+#set(R, F, get(U,F))
+
+puts get(U,F)
+#puts get(U,F)
