@@ -110,6 +110,24 @@ end
 return out
 end
 
+def moveMofang()
+ma = {U => 0,R => 1,F => 2,D => 0,L => 1,B =>2}
+str = "L R' D B F"
+m = str.split(" ")
+l = [[0,0,1],[1,0,0],[0,1,0]]
+l_r = [[0,0,-1],[-1,0,0],[0,-1,0]]
+m.each{|d|
+if d[1] == "'"
+m_l = l_r
+else
+m_l = l
+end
+out = 0
+out = 1 if d[0] == U or d[0] == R or d[0] == F
+rotate_more(m_l[ma[d[0]]],out)
+}
+end
+
 randmofang(5)
 Sketchup.active_model.add_note(@str,0.01,0.02)
 
