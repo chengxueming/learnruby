@@ -85,51 +85,59 @@ def getCommand(x,y)
 l = [[0,0,1],[1,0,0],[0,1,0],[0,0,-1],[-1,0,0],[0,-1,0]]
 out = ""
 if x == 0 or x - 3 == 0
-	if y == 1
-	out = U 
+	if y == 1 
+	out = U  + "'"
 	else
 	out = D
 	end
 elsif x == 1 or x - 3 == 1
 	if y == 1
-	out = R
+	out = R + "'"
 	else
 	out = L
 	end
 elsif x == 2 or x - 3 == 2
 	if y == 1
-	out = B
+	out = B + "'"
 else
 	out = F
 end
 end
 
 if x >= 3
-	out += "'"
+    if out[1] == "'"
+    out = out[0]
+    else
+    out += "'"
+    end
 end
 return out
 end
 
-def moveMofang()
-ma = {U => 0,R => 1,F => 2,D => 0,L => 1,B =>2}
-str = "L R' D B F"
+def moveMofang(str)
+ma = {U => 3,R => 4,B => 5,D => 0,L => 1,F =>2}
 m = str.split(" ")
-l = [[0,0,1],[1,0,0],[0,1,0]]
-l_r = [[0,0,-1],[-1,0,0],[0,-1,0]]
+l = [[0,0,1],[1,0,0],[0,1,0],[0,0,-1],[-1,0,0],[0,-1,0]]
+l_r = [[0,0,-1],[-1,0,0],[0,-1,0],[0,0,1],[1,0,0],[0,1,0]]
 m.each{|d|
 if d[1] == "'"
 m_l = l_r
 else
 m_l = l
 end
+
+if d[0] == U or d[0] == R or d[0] == B
+out = 1 
+else
 out = 0
-out = 1 if d[0] == U or d[0] == R or d[0] == F
+end
 rotate_more(m_l[ma[d[0]]],out)
 }
 end
 
-randmofang(5)
-Sketchup.active_model.add_note(@str,0.01,0.02)
+#randmofang(5)
+moveMofang "R L' D L' U'"
+#Sketchup.active_model.add_note(@str,0.01,0.02)
 
 
 

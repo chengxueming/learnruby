@@ -25,15 +25,15 @@ def set(face, bar,new)
     if index == 0
         l[0][0,3] = new
     elsif index == 1
-    	l[0][2] = new[0]
-    	l[0][5] = new[1]
-    	l[0][8] = new[2]
+        l[0][2] = new[0]
+        l[0][5] = new[1]
+        l[0][8] = new[2]
     elsif index == 2
         l[0][6,9] = new
     elsif index == 3
         l[0][0] = new[0]
-    	l[0][3] = new[1]
-    	l[0][6] = new[2]
+        l[0][3] = new[1]
+        l[0][6] = new[2]
 end
 end
 
@@ -44,17 +44,17 @@ def get(face,bar)
     if index == 0
         return l[0][0...3]
     elsif index == 1
-    	list = []
+        list = []
         l[0].each_slice(3){|ele|
-        	list << ele[2]
+            list << ele[2]
         }
         return list
     elsif index == 2
         return l[0][6...9]
     elsif index == 3
-       	list = []
+        list = []
         l[0].each_slice(3){|ele|
-        	list << ele[0]
+            list << ele[0]
         }
         return list
     end
@@ -105,7 +105,7 @@ def roate_other_r(face,m)
         if i == 3
             set(m[face][1][i], face, first)
             #print(m[face][1][i],m[face][1][0])
- 		else
+        else
         #print(m[face][1][i], m[face][1][i + 1])
         set(m[face][1][i], face, get(m[face][1][i+1], face))
     end
@@ -127,13 +127,13 @@ end
    #      if i == 3
    #          puts @maps[F][0][i+1]
    #          #print(m[face][1][i],m[face][1][0])
- 		# else
+        # else
    #      #print(m[face][1][i], m[face][1][i + 1])
    #      puts @maps[F][0][i]
    #  end
    #  }
 colors = ["yellow","blue","red","green","white","orange"]
-l = "F D U B B R".split(" ")
+l = "F U D' R'".split(" ")
 l.each{|b|
     clock = true
     clock = false if b[1] == "'"
@@ -145,6 +145,7 @@ l.each{|b|
 #roate_other(F,@maps)
 #puts get(R,F)
 #set(R, F, get(U,F))
-
-puts get(U,F)
+for i in get(U,F)
+puts colors[i/10]
+end
 #puts get(U,F)
