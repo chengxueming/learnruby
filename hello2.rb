@@ -9,5 +9,5 @@
 # 	puts "heh"
 # end
 l = 1,2,3,4
-p l.reverse
+p l.index(-1)
 

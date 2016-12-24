@@ -171,10 +171,7 @@ other = get_face_to_face(face)
 return true
 end
 =end
-def back_cross(face)
-count = 1
-flag = 0
-until  judge_1_cross U do
+def back_son_cross(face)
 	#判断底面有没有可以还原的
 	p "D have"
 	other = get_face_to_face(face)
@@ -185,9 +182,10 @@ until  judge_1_cross U do
 		destin = get_face(get(edge,other)[1])
 		p "edge=" + edge+" " +"other=" +other+" "  +"destin="+destin+" " 
 		while get_face(get(destin,other)[1]) != destin
-			rotate_by_command edge
+			rotate_by_command other
 		end
 		rotate_by_command destin+destin,""
+		return
 	end
 	}
 	p "stand have"
@@ -199,9 +197,15 @@ until  judge_1_cross U do
 			if get_face(get(edge,ele)[1]) == face 
 				if !get_is_clock(ele,edge,other)
 					ele += "'"
+
 				rotate_by_command ele
-				break
-			end
+				puts ele
+				rotate_by_command other
+				puts other
+				rotate_by_command get_reverse_face(ele)
+				puts get_reverse_face(ele)
+				return
+				end
 			end
 		}
 	}
@@ -212,28 +216,39 @@ until  judge_1_cross U do
 	if get_face(get(face,edge)[1]) == face and get_face(get(edge,face)[1]) != edge
 		#目标旋转面
 		rotate_by_command edge+edge,""
-		next
+		return
 	end
+	}
 	p "up and down have"
 	#判断每个上下侧面有没有可以变成侧棱的
 	@maps[face][1].each_byte{|e|
 	#当前的边
 	edge = e.chr
 	[face,other].each{|ele|
+		value = get(edge,ele)[1]
 		if get_face(get(edge,ele)[1]) == face 
+		if ele == other
+			cur = get_value_of_face value
+			
+
+		end
 		rotate_by_command edge
-		next
-	end
+		return
+		end
 	}
 	}
 	p "break"
-}
-count += 1
-if count > 20
-	return
-end
-end
 end
 
+def back_cross(face)
+	count = 0
+	until  judge_1_cross face do
+		back_son_cross face
+	count += 1
+	if count > 30
+		return
+	end
+	end
+end
 back_cross U
 puts @command

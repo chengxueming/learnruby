@@ -172,6 +172,18 @@ end
 def get_is_clock(face,from,to)
     return @maps[face][1].index(to) > @maps[face][1].index(from)
 end
+
+def get_reverse_face(face)
+    return (face[1] == "'")?face[0]:face[0] + "'"
+    #return face[0] + "'" if face[1] == "" else face[0]
+    end
+
+def get_value_of_face(value)
+    for k in @maps
+        k[1][0].index(value) != nil
+        return k[0]
+    end
+end
 # rotate_face(@maps,F,true)
 #set(F,U,[111,222,333])
 #roate_other(F,@maps)
@@ -181,11 +193,11 @@ end
 # puts colors[i/10]
 # end
 #puts get(U,F)
-rotate_by_command "D' B' F' D L'"
+rotate_by_command "F R B' D' U U U' B L D B L' R' F' L U' D' D' D' B'"
 # # @maps[F][0].each{|num|
 # # p get_color(num)
 # # }
-# get(D,F).each{|num|
+# get(D,L).each{|num|
 # p get_color(num)
 # #p num
 # }
