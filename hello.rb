@@ -184,7 +184,7 @@ def back_son_cross(face)
 		while get_face(get(destin,other)[1]) != destin
 			rotate_by_command other
 		end
-		rotate_by_command destin+destin,""
+		rotate_by_command [destin,destin].join(" ")
 		return
 	end
 	}
@@ -193,19 +193,16 @@ def back_son_cross(face)
 	@maps[face][1].each_byte{|e|
 		#当前的边
 		edge = e.chr
+		puts "face =>" + face + "edge =>" + edge + "two face:" + get_left_and_right(face,edge).to_s
 		get_left_and_right(face,edge).each{|ele|
 			if get_face(get(edge,ele)[1]) == face 
+				p "hahaha"
 				if !get_is_clock(ele,edge,other)
 					ele += "'"
-
-				rotate_by_command ele
-				puts ele
-				rotate_by_command other
-				puts other
-				rotate_by_command get_reverse_face(ele)
-				puts get_reverse_face(ele)
-				return
 				end
+				#p ele + other + get_reverse_face(ele),""
+				rotate_by_command [ele,other,get_reverse_face(ele)].join(" ")
+				return
 			end
 		}
 	}
@@ -215,7 +212,7 @@ def back_son_cross(face)
 	edge = e.chr
 	if get_face(get(face,edge)[1]) == face and get_face(get(edge,face)[1]) != edge
 		#目标旋转面
-		rotate_by_command edge+edge,""
+		rotate_by_command [edge,edge].join(" ")
 		return
 	end
 	}
@@ -239,16 +236,47 @@ def back_son_cross(face)
 	}
 	p "break"
 end
-
+@max_step = 50
 def back_cross(face)
 	count = 0
 	until  judge_1_cross face do
 		back_son_cross face
 	count += 1
-	if count > 30
+	if count > @max_step
 		return
 	end
 	end
 end
-back_cross U
-puts @command
+def back_mofang()
+count = 1
+while true do
+	if judge_1_cross U
+		if judge_4_corner U
+			if judge_second_floor_4_corner U
+			else
+				#完成第二层的代码
+			end
+		else
+			#完成第一个四个角的代码
+		end
+	else
+		back_cross U #完成十字架的代码
+	end
+end
+end
+
+def back_four_corner()
+	other = get_face_to_face(face)
+	@maps[face][1].each_byte{|e|
+	#当前的边
+	edge = e.chr
+	puts "face =>" + face + "edge =>" + edge + "two face:" + get_left_and_right(face,edge).to_s
+	get_left_and_right(face,edge).each{|ele|
+		if get_face(get_corner_value(edge,other,ele)) == face 
+			
+		end
+		}
+	}
+end
+
+puts @command[@init_command.length..@command.length]

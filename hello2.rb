@@ -8,6 +8,12 @@
 # if !false
 # 	puts "heh"
 # end
-l = 1,2,3,4
-p l.index(-1)
-
+# a = 1
+# b = 2
+# a,b = b,a
+# p a.to_s + b.to_s
+#p "BRFL"[3,]+"BRFL"[0...3]
+# 0.upto 4 do |i|
+#     p i 
+# end
+p {1=>2,2=>3} + {3 => 4 ,4=>5}
