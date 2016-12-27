@@ -196,7 +196,6 @@ def back_son_cross(face)
 		puts "face =>" + face + "edge =>" + edge + "two face:" + get_left_and_right(face,edge).to_s
 		get_left_and_right(face,edge).each{|ele|
 			if get_face(get(edge,ele)[1]) == face 
-				p "hahaha"
 				if !get_is_clock(ele,edge,other)
 					ele += "'"
 				end
@@ -236,7 +235,7 @@ def back_son_cross(face)
 	}
 	p "break"
 end
-@max_step = 50
+
 def back_cross(face)
 	count = 0
 	until  judge_1_cross face do
@@ -265,18 +264,108 @@ while true do
 end
 end
 
-def back_four_corner()
+def back_four_corner_son(face)
 	other = get_face_to_face(face)
-	@maps[face][1].each_byte{|e|
-	#当前的边
-	edge = e.chr
-	puts "face =>" + face + "edge =>" + edge + "two face:" + get_left_and_right(face,edge).to_s
-	get_left_and_right(face,edge).each{|ele|
-		if get_face(get_corner_value(edge,other,ele)) == face 
+	#对于底下的两个角
+@maps[face][1].each_byte{|e|
+#当前的边
+edge = e.chr
+puts "face =>" + face + "edge =>" + edge + "two face:" + get_left_and_right(face,edge).to_s
+get_left_and_right(face,edge).each{|ele|
+	corner_value = get_corner_value(edge,other,ele)
+		if get_face(corner_value) == face 
+			stands = get_stand_value(corner_value,other)
 			
+			while get_face(stands[1]) != stands[0] do
+				rotate_by_command other
+				stands = get_stand_value(corner_value,other)
+			end
+			p stands
+			cur = get_value_of_face(corner_value)
+			if get_face_edge_info(face,stands[0],cur)
+				command = translate cur, "F D F'"
+				rotate_by_command command
+			else
+				command = translate stands[0], "R' D' R"
+				rotate_by_command command
+			end
+			return
 		end
-		}
 	}
+}
+	#判断顶层的stand面有没有face的
+@maps[face][1].each_byte{|e|
+#当前的边
+edge = e.chr
+puts "face =>" + face + "edge =>" + edge + "two face:" + get_left_and_right(face,edge).to_s
+get_left_and_right(face,edge).each{|ele|
+		corner_value = get_corner_value(edge,face,ele)
+		
+		if get_face(corner_value) == face
+			p "stand and up #{edge},#{ele}"
+			dest = edge
+			if !get_is_clock(edge,ele,other)
+				dest += "'"
+			end
+			rotate_by_command dest
+			 another = escape_edge(corner_value,other,dest[0])
+			p ":haha:#{dest},#{another},#{get_reverse_face(dest)}"
+			rotate_by_command [other,get_reverse_face(dest)].join(" ")
+			return
+		end
+	}
+}
+#判断顶层的顶面有没有face的
+@maps[face][1].each_byte{|e|
+#当前的边
+edge = e.chr
+puts "face =>" + face + "edge =>" + edge + "two face:" + get_left_and_right(face,edge).to_s
+get_left_and_right(face,edge).each{|ele|
+		
+		corner_value = get_corner_value(face,edge,ele)
+		if get_face(corner_value) == face and !(get_face(get_stand_value(corner_value,edge)) == ele and get_face(get_stand_value(corner_value,ele)) == edge)
+			if !get_is_clock(ele,face,edge)
+				ele += "'"
+			end
+			rotate_by_command [ele,other,get_reverse_face(ele)].join(" ")
+			return
+		end
+	}
+}
+#判断底层的底面有没有face的
+@maps[face][1].each_byte{|e|
+#当前的边
+edge = e.chr
+puts "face =>" + face + "edge =>" + edge + "two face:" + get_left_and_right(face,edge).to_s
+	get_left_and_right(face,edge).each{|ele|
+		
+		corner_value = get_corner_value(other,edge,ele)
+		if get_face(corner_value) == face
+			while get_face(get_otehr_face_value(corner_value)) == face do
+				rotate_by_command other
+			end
+			des = get_value_state(corner_value)[1]
+			dirct = des[0]
+			if !get_is_clock(des[0],des[1],other)
+				dirct += "'"
+			end
+			rotate_by_command [dirct,other,get_reverse_face(dirct)].join(" ")
+		end
+	}
+}
 end
 
+def back_four_corner(face)
+	count = 0
+	until  judge_4_corner face do
+		back_four_corner_son face
+	count += 1
+	if count > @max_step
+		return
+	end
+	end
+end
+
+
+back_four_corner(U)
 puts @command[@init_command.length..@command.length]

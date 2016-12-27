@@ -211,6 +211,7 @@ def get_value_state(value)
     }
 end
 
+#获得一个角的除去当前面和排除面的另一个面和值
 def get_stand_value(value,exclude_face)
     arr = get_value_state(value)
     another = arr[1].split("") - [exclude_face]
@@ -219,28 +220,52 @@ end
 
 def translate(face_as_F,command,is_reverse = false)
     up = (is_reverse==false)? U: D
-    m = {face_as_F=>F,U=>up,D =>get_face_to_face(up)}
+    m = {F => face_as_F,U=>up,D =>get_face_to_face(up)}
     # @maps[up][1].each_byte{|e|
     #     edge = e.chr
     #     edge.
     # }
+    p @maps[up][1]
     1.upto 3 do |i|
         beg = @maps[up][1].index(face_as_F)+i
         beg = beg > 3?beg - 4:beg
         ind = @maps[up][1].index(F)+i
         ind = ind > 3?ind - 4:ind
-        m[@maps[up][1][beg]] = @maps[up][1][ind]
+        p "#{@maps[up][1][beg]},#{@maps[up][1][ind]}"
+        m[@maps[up][1][ind]] = @maps[up][1][beg]
     end
-    p m 
     true_command = []
     command.split(" ").each{|ele|
+        p ele
         insert = m[ele[0]] + ele[1].to_s
         insert = (is_reverse == true)?get_reverse_face(insert):insert
         true_command.insert(-1,insert)
-
     }
-    p m
     return true_command.join(" ")
+end
+
+#获得相对一个面 如果顺时针返回true 否则为false
+def get_face_edge_info(face,before,after)
+    if @maps[face][1].index(before) == 3
+        return true
+    end
+    return @maps[face][1].index(before) < @maps[face][1].index(after)
+end
+
+def get_otehr_face_value(value)
+    arr = get_value_state(value)
+    other = get_face_to_face(arr[0])
+    return get_corner_value(other,arr[1][0],arr[1][1])
+end
+
+def escape_edge(value,floor,edge)
+    arr = get_value_state(value)
+    l = [arr[0],arr[1][0],arr[1][1]] - [floor,edge]
+    p "escape_edge,#{[arr[0],arr[1][0],arr[1][1]]}"
+    if get_is_clock(floor,edge,l[0])
+        return floor
+    end
+    return floor + "'"
 end
 # rotate_face(@maps,F,true)
 #set(F,U,[111,222,333])
@@ -251,17 +276,21 @@ end
 # puts colors[i/10]
 # end
 #puts get(U,F)
-@init_command = "R' F' D' L' D L' F' B' L L'"
+@init_command = "R' F' D' L' D L' F' B' L L' B D B' D D R D R' R' D R"
 rotate_by_command @init_command
 # # @maps[F][0].each{|num|
 # # p get_color(num)
 # # }
-# get(L,F).each{|num|
-# p get_color(num)
-# #p num
-# }
+get(R,B).each{|num|
+p get_color(num)
+#p num
+}
 #p get_stand_value(11,F)
-p translate R,"F D F'",true
+
+
+@max_step = 0
+p translate R,"F D F'"
+
 #p @maps[D][0]
 # @maps[D][1].each_byte{|e|
 # edge = e.chr
