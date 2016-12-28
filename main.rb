@@ -154,6 +154,7 @@ end
 
 def get_face(num)
     face = ["F","R","L","B","U","D"]
+    #p "talk #{num}"
     return face[num/10]
 end
 
@@ -170,7 +171,11 @@ def get_left_and_right(face,edge)
 end
 
 def get_is_clock(face,from,to)
-    return @maps[face][1].index(to) > @maps[face][1].index(from)
+    value = @maps[face][1].index(to) - @maps[face][1].index(from)
+    if (value == 1) or (value == -3)
+        return true
+    end
+    return false
 end
 
 def get_reverse_face(face)
@@ -189,6 +194,7 @@ end
 def get_corner_value(face,edge1,edge2)
     a = get(face,edge1)
     b = get(face,edge2)
+    p "test #{a} #{b}"
     return (a&b)[0]
 end
 
@@ -221,22 +227,15 @@ end
 def translate(face_as_F,command,is_reverse = false)
     up = (is_reverse==false)? U: D
     m = {F => face_as_F,U=>up,D =>get_face_to_face(up)}
-    # @maps[up][1].each_byte{|e|
-    #     edge = e.chr
-    #     edge.
-    # }
-    p @maps[up][1]
     1.upto 3 do |i|
         beg = @maps[up][1].index(face_as_F)+i
         beg = beg > 3?beg - 4:beg
         ind = @maps[up][1].index(F)+i
         ind = ind > 3?ind - 4:ind
-        p "#{@maps[up][1][beg]},#{@maps[up][1][ind]}"
         m[@maps[up][1][ind]] = @maps[up][1][beg]
     end
     true_command = []
     command.split(" ").each{|ele|
-        p ele
         insert = m[ele[0]] + ele[1].to_s
         insert = (is_reverse == true)?get_reverse_face(insert):insert
         true_command.insert(-1,insert)
@@ -244,13 +243,6 @@ def translate(face_as_F,command,is_reverse = false)
     return true_command.join(" ")
 end
 
-#获得相对一个面 如果顺时针返回true 否则为false
-def get_face_edge_info(face,before,after)
-    if @maps[face][1].index(before) == 3
-        return true
-    end
-    return @maps[face][1].index(before) < @maps[face][1].index(after)
-end
 
 def get_otehr_face_value(value)
     arr = get_value_state(value)
@@ -260,11 +252,14 @@ end
 
 def escape_edge(value,floor,edge)
     arr = get_value_state(value)
+    p "escape_edge haha #{arr} #{edge}" 
     l = [arr[0],arr[1][0],arr[1][1]] - [floor,edge]
-    p "escape_edge,#{[arr[0],arr[1][0],arr[1][1]]}"
+    p "#{[arr[0],arr[1][0],arr[1][1]]},#{[floor,edge]},#{@maps[floor][1]}"
     if get_is_clock(floor,edge,l[0])
+        p "dfadfa"
         return floor
     end
+    p "***************"
     return floor + "'"
 end
 # rotate_face(@maps,F,true)
@@ -276,7 +271,7 @@ end
 # puts colors[i/10]
 # end
 #puts get(U,F)
-@init_command = "R' F' D' L' D L' F' B' L L' B D B' D D R D R' R' D R"
+@init_command = "B' F' U' D' F' U D L' D D D F F B' D B D D D B B L F' D F D D L L D R D R' F' D' F L' D' L D L D L'"
 rotate_by_command @init_command
 # # @maps[F][0].each{|num|
 # # p get_color(num)
@@ -289,7 +284,7 @@ p get_color(num)
 
 
 @max_step = 0
-p translate R,"F D F'"
+#p translate R,"F D F'"
 
 #p @maps[D][0]
 # @maps[D][1].each_byte{|e|

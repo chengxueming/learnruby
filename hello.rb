@@ -179,12 +179,15 @@ def back_son_cross(face)
 	edge = e.chr
 	if get_face(get(other,edge)[1]) == face
 		#目标旋转面
-		destin = get_face(get(edge,other)[1])
-		p "edge=" + edge+" " +"other=" +other+" "  +"destin="+destin+" " 
-		while get_face(get(destin,other)[1]) != destin
+		destin = get(edge,other)[1]
+		destin_face = get_face(get(edge,other)[1])
+		p "edge=" + edge+" " +"other=" +other+" "  +"destin="+get_face(destin)+" " 
+		while get(destin_face,other)[1] != destin do
+			p "bug"
 			rotate_by_command other
 		end
-		rotate_by_command [destin,destin].join(" ")
+		p "remove bug"
+		rotate_by_command [destin_face,destin_face].join(" ")
 		return
 	end
 	}
@@ -246,23 +249,7 @@ def back_cross(face)
 	end
 	end
 end
-def back_mofang()
-count = 1
-while true do
-	if judge_1_cross U
-		if judge_4_corner U
-			if judge_second_floor_4_corner U
-			else
-				#完成第二层的代码
-			end
-		else
-			#完成第一个四个角的代码
-		end
-	else
-		back_cross U #完成十字架的代码
-	end
-end
-end
+
 
 def back_four_corner_son(face)
 	other = get_face_to_face(face)
@@ -270,19 +257,20 @@ def back_four_corner_son(face)
 @maps[face][1].each_byte{|e|
 #当前的边
 edge = e.chr
-puts "face =>" + face + "edge =>" + edge + "two face:" + get_left_and_right(face,edge).to_s
+puts "1 face =>" + face + "edge =>" + edge + "two face:" + get_left_and_right(face,edge).to_s
 get_left_and_right(face,edge).each{|ele|
 	corner_value = get_corner_value(edge,other,ele)
+		p "a #{corner_value}"
 		if get_face(corner_value) == face 
 			stands = get_stand_value(corner_value,other)
-			
+			p "b #{corner_value}"
 			while get_face(stands[1]) != stands[0] do
 				rotate_by_command other
 				stands = get_stand_value(corner_value,other)
 			end
 			p stands
 			cur = get_value_of_face(corner_value)
-			if get_face_edge_info(face,stands[0],cur)
+			if get_is_clock(face,stands[0],cur)
 				command = translate cur, "F D F'"
 				rotate_by_command command
 			else
@@ -297,10 +285,10 @@ get_left_and_right(face,edge).each{|ele|
 @maps[face][1].each_byte{|e|
 #当前的边
 edge = e.chr
-puts "face =>" + face + "edge =>" + edge + "two face:" + get_left_and_right(face,edge).to_s
+puts "2 face =>" + face + "edge =>" + edge + "two face:" + get_left_and_right(face,edge).to_s
 get_left_and_right(face,edge).each{|ele|
 		corner_value = get_corner_value(edge,face,ele)
-		
+		p "d #{corner_value} #{edge} #{face} #{ele}"
 		if get_face(corner_value) == face
 			p "stand and up #{edge},#{ele}"
 			dest = edge
@@ -309,8 +297,9 @@ get_left_and_right(face,edge).each{|ele|
 			end
 			rotate_by_command dest
 			 another = escape_edge(corner_value,other,dest[0])
-			p ":haha:#{dest},#{another},#{get_reverse_face(dest)}"
-			rotate_by_command [other,get_reverse_face(dest)].join(" ")
+			p ":haha:#{corner_value},#{other},#{dest[0]} #{another}"
+			rotate_by_command [another,get_reverse_face(dest)].join(" ")
+			p "something not well"
 			return
 		end
 	}
@@ -319,11 +308,11 @@ get_left_and_right(face,edge).each{|ele|
 @maps[face][1].each_byte{|e|
 #当前的边
 edge = e.chr
-puts "face =>" + face + "edge =>" + edge + "two face:" + get_left_and_right(face,edge).to_s
+puts "3 face =>" + face + "edge =>" + edge + "two face:" + get_left_and_right(face,edge).to_s
 get_left_and_right(face,edge).each{|ele|
 		
 		corner_value = get_corner_value(face,edge,ele)
-		if get_face(corner_value) == face and !(get_face(get_stand_value(corner_value,edge)) == ele and get_face(get_stand_value(corner_value,ele)) == edge)
+		if get_face(corner_value) == face and !(get_face(get_stand_value(corner_value,edge)[1]) == ele and get_face(get_stand_value(corner_value,ele)[1]) == edge)
 			if !get_is_clock(ele,face,edge)
 				ele += "'"
 			end
@@ -336,7 +325,7 @@ get_left_and_right(face,edge).each{|ele|
 @maps[face][1].each_byte{|e|
 #当前的边
 edge = e.chr
-puts "face =>" + face + "edge =>" + edge + "two face:" + get_left_and_right(face,edge).to_s
+puts "4 face =>" + face + "edge =>" + edge + "two face:" + get_left_and_right(face,edge).to_s
 	get_left_and_right(face,edge).each{|ele|
 		
 		corner_value = get_corner_value(other,edge,ele)
@@ -366,6 +355,24 @@ def back_four_corner(face)
 	end
 end
 
+def back_mofang(face)
+count = 1
+while true do
+	if judge_1_cross U
+		# if judge_4_corner U
+		# 	if judge_second_floor_4_corner U
+		# 	else
+		# 		return #完成第二层的代码
+		# 	end
+		# else
+		# 	back_four_corner face#完成第一个四个角的代码
+		# end
+		return
+	else
+		back_cross face #完成十字架的代码
+	end
+end
+end
 
-back_four_corner(U)
+back_four_corner U
 puts @command[@init_command.length..@command.length]
