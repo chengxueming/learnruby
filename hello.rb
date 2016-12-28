@@ -355,24 +355,70 @@ def back_four_corner(face)
 	end
 end
 
-def back_mofang(face)
+
+
+def back_mofang()
 count = 1
 while true do
 	if judge_1_cross U
-		# if judge_4_corner U
-		# 	if judge_second_floor_4_corner U
-		# 	else
-		# 		return #完成第二层的代码
-		# 	end
-		# else
-		# 	back_four_corner face#完成第一个四个角的代码
-		# end
+		if judge_4_corner U
+			if judge_second_floor_4_corner U
+			else
+				return #完成第二层的代码
+			end
+		else
+			back_four_corner U#完成第一个四个角的代码
+		end
 		return
 	else
-		back_cross face #完成十字架的代码
+		back_cross U #完成十字架的代码
 	end
 end
 end
 
-back_four_corner U
+def back_second_floor_son(face)
+other = get_face_to_face(face)
+@maps[other][1].each_byte{|e|
+#当前的边
+	edge = e.chr
+	#上面的值
+	valueU = get(other,edge)[1]
+	#侧面的值
+	valueF = get(edge,other)[1]
+	if get_face(valueU) == other or get_face(valueF) == other
+		next
+	end
+	while get_face(valueF) != get_value_of_face(valueF) do
+		#旋转
+		rotate_by_command other
+	end
+	valueU = get(other,get_face(valueF))[1]
+	get_left_and_right(other,get_face(valueF)).each{|ele|
+		if get_face(valueU) == ele
+			if  get_is_clock(other,get_face(valueF),ele)
+				command = translate ele, "U' F' U F U R U' R'",true
+				rotate_by_command command
+			else
+				p "tell me truth #{get_face(valueF)}"
+				command = translate get_face(valueF), "F U F U F U' F' U' F'",true
+				rotate_by_command command
+			end
+			return
+		end
+	}
+}
+end
+
+def back_second_floor(face)
+	count = 0
+	until  judge_second_floor_4_corner face do
+		back_second_floor_son face
+	count += 1
+	if count > @max_step
+		return
+	end
+	end
+end
+
+back_second_floor_son U
 puts @command[@init_command.length..@command.length]

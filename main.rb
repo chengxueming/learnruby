@@ -4,6 +4,10 @@
 # }
 # if l[0] > 2;puts "hello";end
 #puts[0:]
+=begin
+这个算法只支持上面还原
+translate函数默认是U为上面
+=end
 F = "F"
 R = "R"
 L = "L"
@@ -237,7 +241,7 @@ def translate(face_as_F,command,is_reverse = false)
     true_command = []
     command.split(" ").each{|ele|
         insert = m[ele[0]] + ele[1].to_s
-        insert = (is_reverse == true)?get_reverse_face(insert):insert
+        #insert = (is_reverse == true)?get_reverse_face(insert):insert
         true_command.insert(-1,insert)
     }
     return true_command.join(" ")
@@ -271,19 +275,19 @@ end
 # puts colors[i/10]
 # end
 #puts get(U,F)
-@init_command = "B' F' U' D' F' U D L' D D D F F B' D B D D D B B L F' D F D D L L D R D R' F' D' F L' D' L D L D L'"
+@init_command = "U' U' F L' B' B U' B' L' R' B D D F' R L' L F B' L D L L F' D F D B B R R D D D F F R F D F' R R F' D' F D D R D R' D D D F' D' F D B D B' D D R' D' R B D B' D D D B D B' D D L D L D L D' L' D' L' R D R D R D' R' D' R' D F D F D F D' F' D' F'"
 rotate_by_command @init_command
 # # @maps[F][0].each{|num|
 # # p get_color(num)
 # # }
-get(R,B).each{|num|
+get(D,F).each{|num|
 p get_color(num)
 #p num
 }
 #p get_stand_value(11,F)
 
 
-@max_step = 0
+@max_step = 100
 #p translate R,"F D F'"
 
 #p @maps[D][0]

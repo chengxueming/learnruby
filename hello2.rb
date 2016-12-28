@@ -16,5 +16,9 @@
 # 0.upto 4 do |i|
 #     p i 
 # end
-p {1=>2,2=>3} + {3 => 4 ,4=>5}
-ff
+(1..3).each{|ele|
+	if ele == 1
+		next
+	end
+p ele
+}
