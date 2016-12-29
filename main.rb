@@ -21,7 +21,6 @@ D = "D"
         U=>[[41,42,43,44,45,46,47,48,49],"BRFL"],
         D=>[[51,52,53,54,55,56,57,58,59],"FRBL"],}
 
-
 def set(face, bar,new)
     l = @maps[face]
     # face = "U"
@@ -162,6 +161,11 @@ def get_face(num)
     return face[num/10]
 end
 
+def get_color_by_face(face)
+    colors = {"F"=>"yellow","R" => "blue","L" => "red","B" => "green","U" => "white","D" => "orange"}
+    return colors[face]
+end
+
 def get_face_to_face(face)
     m = ["F","R","L","B","U","D"]
     him = @maps[face][1].split("") + [face]
@@ -198,7 +202,6 @@ end
 def get_corner_value(face,edge1,edge2)
     a = get(face,edge1)
     b = get(face,edge2)
-    p "test #{a} #{b}"
     return (a&b)[0]
 end
 
@@ -300,6 +303,21 @@ def get_edge_stand(value)
     edge = arr[1][0]
     return get(edge,face)[1]
 end
+
+def get_next_for_corner(value)
+
+end
+
+def get_left_and_right_another(as_F,as_U = D)
+    s = @maps[as_U][1]
+    left = s.index(as_F) + 1 
+    left = 0 if s.index(as_F) + 1 > 3
+    right = s.index(as_F) - 1
+    right = 3 if s.index(as_F) - 1 < 0
+    return [s[left],s[right]]
+end
+
+
 # rotate_face(@maps,F,true)
 #set(F,U,[111,222,333])
 #roate_other(F,@maps)
@@ -309,7 +327,9 @@ end
 # puts colors[i/10]
 # end
 #puts get(U,F)
-@init_command = "U' R B' L' B' L F F' F B"
+@init_command = "U' R B' L' B' L F F' F B L' D L D D B B F D F' D D L L D F F F D F' R R D D F D F' B D B' D R D R' D D L D L' B\
+ D B' D D D B D B' R D R' D D D R D R' D D B D B D B D' B' D' B' D D D F D F D F D' F' D' F' D L D L D L D' L' D' L' R D R D R D' R' D' R' D D' R' D R D F D' F' F' D' R' D R F F' D' R' D R F\
+ B D B' D B D D B' D D"
 rotate_by_command @init_command
 # # @maps[F][0].each{|num|
 # # p get_color(num)
@@ -323,7 +343,7 @@ p get_edge_stand(52)
 
 @max_step = 100
 #p translate F,"R' U' F' U F R",true
-
+p get_left_and_right_another(R,U)
 #p @maps[D][0]
 # @maps[D][1].each_byte{|e|
 # edge = e.chr

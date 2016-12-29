@@ -469,7 +469,6 @@ def back_third_floor_cross_condition(face,edge)
 	end
 	end
 	#情况2
-	p "ddddddddddddddddddddddddd #{edge} #{get_color(get(other,edge)[1])}"
 	if get_face(get(other,edge)[1]) == other
 	nex = get_next(edge)
 	p "look get_next #{other},#{edge}"
@@ -511,7 +510,6 @@ until judge_cross_of_face other do
 		end
 		break
 	end
-
 }
 end
 end
@@ -539,7 +537,100 @@ while true do
 end
 end
 
+def back_four_corner_of_third_floor_son(face)
+	other = get_face_to_face(face)
+	@maps[other][1].each_byte{|e|
+	edge = e.chr
+	lr = get_left_and_right_another(edge,other)
+	face_back = get_face_to_face(edge)
+#表示上面每个面的点
+	face_LD = get_face(get_corner_value(other,edge,lr[0]))
+	face_RD = get_face(get_corner_value(other,edge,lr[1]))
+	face_LU = get_face(get_corner_value(other,face_back,lr[0]))
+	face_RU = get_face(get_corner_value(other,face_back,lr[1]))
+#表示侧面每个面的点
+	#上下的侧面
+	_face_LD = get_face(get_corner_value(edge,other,lr[0]))
+	_face_RD = get_face(get_corner_value(edge,other,lr[1]))
+	_face_LU = get_face(get_corner_value(face_back,other,lr[0]))
+	_face_RU = get_face(get_corner_value(face_back,other,lr[1]))
+	#左右的侧面
+	_face_DL = get_face(get_corner_value(lr[0],edge,other))
+	_face_DR = get_face(get_corner_value(lr[1],edge,other))
+	_face_UL = get_face(get_corner_value(lr[0],face_back,other))
+	_face_UR = get_face(get_corner_value(lr[1],face_back,other))
+	p "#{edge}"
+	p "face_LD:#{face_LD}face_RD:#{face_RD}face_LU:#{face_LU}face_RU:#{face_RU}"
+	p "_face_LD:#{_face_LD}_face_RD:#{_face_RD}_face_LU:#{_face_LU}_face_RU:#{_face_RU}"
+	p "_face_DL:#{_face_DL}_face_DR:#{_face_DR}_face_UL:#{_face_UL}_face_UR:#{_face_UR}"
+#情况1
+	if edge == L
+		p "talk face_LU:#{get_color_by_face(face_LU)},_face_RU:#{get_color_by_face(_face_RU)},_face_DR:#{get_color_by_face(_face_DR)},_face_LD:#{get_color_by_face(_face_LD)}"
+	end
+	if face_LU == other and _face_RU == other and _face_DR == other and _face_LD == other
+		p "state 1"
+		command = translate edge, "R' U' R U' R' U' U' R U' U'",true
+		rotate_by_command command
+		return
+	end
+#情况2
+	
+	if face_LD == other and _face_LU == other and _face_DR == other  and _face_RD == other
+		p "state 2"
+		command = translate edge, "R U R' U R U U R' U U",true
+		rotate_by_command command
+		return
+	end
 
 
-back_mofang
+#使用公式b的情况
+	if _face_LU == other and _face_LD == other and face_RU == other and face_RD == other
+		p "state b1 #{edge}"
+		command = translate edge, "R U R' U R U U R' U U",true
+		rotate_by_command command
+		return
+	end
+
+	if _face_LD == other and _face_UR == other and face_RD == other and face_LU == other
+		p "state b2"
+		command = translate edge, "R U R' U R U U R' U U",true
+		rotate_by_command command
+		return
+	end
+
+	if _face_LD == other and _face_LU == other and _face_UR == other and _face_RD == other
+		p "state b3"
+		command = translate edge, "R U R' U R U U R' U U",true
+		rotate_by_command command
+		return
+	end
+#使用公式a的情况
+	if face_LD == other and _face_RU == other and face_RD == other and _face_LU == other
+		p "state a1"
+		command = translate edge, "R U R' U R U2 R' U U",true
+		rotate_by_command command
+		return
+	end
+
+	if _face_DL == other and _face_DR == other and _face_UL == other and _face_UR == other
+		p "state a2"
+		command = translate edge, "R U R' U R U2 R' U U",true
+		rotate_by_command command
+		return
+	end
+	}
+end
+
+def back_four_corner_of_third_floor(face)
+other = get_face_to_face(face)
+count = 0
+until judge_four_corner_of_face other do
+	back_four_corner_of_third_floor_son U
+	count += 1
+	if count > @max_step
+	return
+	end
+end
+end
+back_four_corner_of_third_floor U
 puts @command[@init_command.length..@command.length]
