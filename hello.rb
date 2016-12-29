@@ -390,6 +390,34 @@ other = get_face_to_face(face)
 		end
 	}
 }
+@maps[other][1].each_byte{|e|
+#当前的边
+	edge = e.chr
+	#上面的值
+	get_left_and_right(other,edge).each{|ele|
+		if get_face(get_edge_stand(get(edge,ele)[1])) != ele and get_face(get(edge,ele)[1]) != edge
+			if get_face(get_edge_stand(get(edge,ele)[1])) != other and get_face(get(edge,ele)[1]) != other
+=begin
+				p "second #{get_face(get_edge_stand(get(edge,ele)[1]))} #{get_face(get(edge,ele)[1])}"
+				p "#{edge} #{ele}"
+				as_F = edge
+				as_F = ele if !get_is_clock(U,edge,ele)
+				p "as_F is #{as_F} edge is #{edge} "
+				command = translate ele, "U' F' U F U R U' R'",true
+				rotate_by_command command
+				return
+=end
+			if  get_is_clock(U,edge,ele)
+				command = translate edge, "U' F' U F U R U' R'",true
+				rotate_by_command command
+			else
+				command = translate ele, "F U F U F U' F' U' F'",true
+				rotate_by_command command
+			end
+			end
+		end
+	}
+}
 end
 
 def back_second_floor(face)
@@ -493,19 +521,15 @@ count = 1
 while true do
 	if judge_1_cross U
 		if judge_4_corner U
-			# if judge_second_floor_4_corner U
-			# # 	#完成第三层
-			# # if judge_cross_of_face D
-			# # 	return 
-			# # else
-			# # 	back_third_floor_cross U
-			# # end
-			# # else
-			# return
-			# else
-			# back_second_floor U#完成第二层的代码
-			# end
-			return
+			if judge_second_floor_4_corner U
+				if judge_cross_of_face D
+					return
+				else
+					back_third_floor_cross U
+				end
+			else
+			back_second_floor U
+			end
 		else
 			back_four_corner U#完成第一个四个角的代码
 		end
@@ -516,5 +540,6 @@ end
 end
 
 
-back_second_floor_son U
+
+back_mofang
 puts @command[@init_command.length..@command.length]

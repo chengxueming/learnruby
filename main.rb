@@ -243,8 +243,6 @@ def translate(face_as_F,command,is_reverse = false)
     #if !is_reverse
        # p "999999999999999"
         s = @maps[up][1]
-       # s = change(up,L,R) if is_reverse == true
-       # p "s is #{s}"
         1.upto 3 do |i|
         beg = s.index(face_as_F)+i
         beg = beg > 3?beg - 4:beg
@@ -257,21 +255,6 @@ def translate(face_as_F,command,is_reverse = false)
         if is_reverse == true
             m[L],m[R] = m[R],m[L]
         end
-=begin
-        p m
-    else
-        p "121232134123"
-        -1.downto -3 do |i|
-        beg = @maps[up][1].index(face_as_F)+i
-        beg = beg < 0?beg + 4:beg
-        ind = @maps[up][1].index(F)+i
-        ind = ind < 0?ind + 4:ind
-        p "1,2 #{@maps[up][1][ind]},#{@maps[up][1][beg]}"
-        m[@maps[up][1][ind]] = @maps[up][1][beg]
-        end
-        p m
-    end
-=end
 
     true_command = []
     command.split(" ").each{|ele|
@@ -310,6 +293,13 @@ def get_next(from)
         return @maps[U][1][0]
     end
 end
+
+def get_edge_stand(value)
+    arr = get_value_state(value)
+    face = arr[0]
+    edge = arr[1][0]
+    return get(edge,face)[1]
+end
 # rotate_face(@maps,F,true)
 #set(F,U,[111,222,333])
 #roate_other(F,@maps)
@@ -319,9 +309,7 @@ end
 # puts colors[i/10]
 # end
 #puts get(U,F)
-@init_command = "U B' R F R' F' U' F' D L'\
- B' D B L L B R D R' D D D R R B D B' D D D B B L L D L' D D D L L F' D F D D D F F F D F' D L' D' L D D F D F' D D L D L' D B' D' B\
- D' R' D R D F D' F' D' B' D B D R D' R' D D D R D R D R D' R' D' R'"
+@init_command = "U' R B' L' B' L F F' F B"
 rotate_by_command @init_command
 # # @maps[F][0].each{|num|
 # # p get_color(num)
@@ -331,7 +319,7 @@ p get_color(num)
 #p num
 }
 #p get_stand_value(11,F)
-
+p get_edge_stand(52)
 
 @max_step = 100
 #p translate F,"R' U' F' U F R",true
