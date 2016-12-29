@@ -228,16 +228,51 @@ def get_stand_value(value,exclude_face)
     return [another[0],get_corner_value(another[0],arr[0],exclude_face)]
 end
 
+def change(face,before,after)
+    s = String.new(@maps[face][1])
+    i1 = s.index(before)
+    i2 = s.index(after)
+    s[i1],s[i2] = s[i2],s[i1]
+    return s
+end
+
 def translate(face_as_F,command,is_reverse = false)
     up = (is_reverse==false)? U: D
     m = {F => face_as_F,U=>up,D =>get_face_to_face(up)}
-    1.upto 3 do |i|
-        beg = @maps[up][1].index(face_as_F)+i
+    up = U
+    #if !is_reverse
+       # p "999999999999999"
+        s = @maps[up][1]
+       # s = change(up,L,R) if is_reverse == true
+       # p "s is #{s}"
+        1.upto 3 do |i|
+        beg = s.index(face_as_F)+i
         beg = beg > 3?beg - 4:beg
-        ind = @maps[up][1].index(F)+i
+        ind = s.index(F)+i
         ind = ind > 3?ind - 4:ind
+        p "1,2 #{s[ind]},#{s[beg]}"
+        m[s[ind]] = s[beg]
+        end
+
+        if is_reverse == true
+            m[L],m[R] = m[R],m[L]
+        end
+=begin
+        p m
+    else
+        p "121232134123"
+        -1.downto -3 do |i|
+        beg = @maps[up][1].index(face_as_F)+i
+        beg = beg < 0?beg + 4:beg
+        ind = @maps[up][1].index(F)+i
+        ind = ind < 0?ind + 4:ind
+        p "1,2 #{@maps[up][1][ind]},#{@maps[up][1][beg]}"
         m[@maps[up][1][ind]] = @maps[up][1][beg]
+        end
+        p m
     end
+=end
+
     true_command = []
     command.split(" ").each{|ele|
         insert = m[ele[0]] + ele[1].to_s
@@ -266,6 +301,15 @@ def escape_edge(value,floor,edge)
     p "***************"
     return floor + "'"
 end
+
+def get_next(from)
+    ind = @maps[U][1].index(from) 
+    if ind != 3
+        return @maps[U][1][ind + 1]
+    else
+        return @maps[U][1][0]
+    end
+end
 # rotate_face(@maps,F,true)
 #set(F,U,[111,222,333])
 #roate_other(F,@maps)
@@ -275,12 +319,14 @@ end
 # puts colors[i/10]
 # end
 #puts get(U,F)
-@init_command = "U' U' F L' B' B U' B' L' R' B D D F' R L' L F B' L D L L F' D F D B B R R D D D F F R F D F' R R F' D' F D D R D R' D D D F' D' F D B D B' D D R' D' R B D B' D D D B D B' D D L D L D L D' L' D' L' R D R D R D' R' D' R' D F D F D F D' F' D' F'"
+@init_command = "U B' R F R' F' U' F' D L'\
+ B' D B L L B R D R' D D D R R B D B' D D D B B L L D L' D D D L L F' D F D D D F F F D F' D L' D' L D D F D F' D D L D L' D B' D' B\
+ D' R' D R D F D' F' D' B' D B D R D' R' D D D R D R D R D' R' D' R'"
 rotate_by_command @init_command
 # # @maps[F][0].each{|num|
 # # p get_color(num)
 # # }
-get(D,F).each{|num|
+get(F,D).each{|num|
 p get_color(num)
 #p num
 }
@@ -288,7 +334,7 @@ p get_color(num)
 
 
 @max_step = 100
-#p translate R,"F D F'"
+#p translate F,"R' U' F' U F R",true
 
 #p @maps[D][0]
 # @maps[D][1].each_byte{|e|

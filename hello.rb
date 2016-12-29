@@ -357,24 +357,7 @@ end
 
 
 
-def back_mofang()
-count = 1
-while true do
-	if judge_1_cross U
-		if judge_4_corner U
-			if judge_second_floor_4_corner U
-			else
-				return #完成第二层的代码
-			end
-		else
-			back_four_corner U#完成第一个四个角的代码
-		end
-		return
-	else
-		back_cross U #完成十字架的代码
-	end
-end
-end
+
 
 def back_second_floor_son(face)
 other = get_face_to_face(face)
@@ -419,6 +402,119 @@ def back_second_floor(face)
 	end
 	end
 end
+
+#判断某一个面的十字有无还原
+def judge_cross_of_face(face)
+	@maps[face][1].each_byte{|e|
+#当前的边
+	edge = e.chr
+	if get_face(get(face,edge)[1]) != face
+		return false
+	end
+}
+return true
+end
+
+def judge_four_corner_of_face(face)
+	@maps[face][1].each_byte{|e|
+#当前的边
+	edge = e.chr
+	if get_face(get(face,edge)[0]) != face or get_face(get(face,edge)[2]) != face
+		return false
+	end
+}
+return true
+end
+
+def back_third_floor_cross_condition(face,edge)
+		#情况1
+	other = face
+	if get_face(get(edge,other)[1]) == face
+	nex = get_next(edge)
+	if get_face(get(nex,other)[1]) == other
+		nex2 = get_next(nex)
+		if get_face(get(other,nex2)[1]) == other
+			#情况1
+			p "condation1 third floor #{edge}"
+			return true
+		end
+	end
+	end
+	#情况2
+	p "ddddddddddddddddddddddddd #{edge} #{get_color(get(other,edge)[1])}"
+	if get_face(get(other,edge)[1]) == other
+	nex = get_next(edge)
+	p "look get_next #{other},#{edge}"
+	p "look next #{nex}"
+	if get_face(get(nex,other)[1]) == other
+	nex2 = get_next(nex)
+	if get_face(get(other,nex2)[1]) == other
+		#情况2
+		p "condation2 third floor #{edge}"
+		return true
+	end
+	end
+
+	end
+	#情况3
+	if get_face(get(edge,other)[1]) == face
+	nex = get_next(edge)
+	if get_face(get(nex,other)[1]) == other
+		#情况3
+		p "condation3 third floor #{edge}"
+		return true
+	end
+	end
+end
+
+def back_third_floor_cross(face)
+other = get_face_to_face(face)
+count = 0
+until judge_cross_of_face other do
+	@maps[other][1].each_byte{|e|
+	edge = e.chr
+	if true == back_third_floor_cross_condition(other,edge)
+		p "hahahhahah #{edge}"
+		command = translate edge, "R' U' F' U F R",true
+		rotate_by_command command
+		count += 1
+		if count > @max_step
+		return
+		end
+		break
+	end
+
+}
+end
+end
+
+def back_mofang()
+count = 1
+while true do
+	if judge_1_cross U
+		if judge_4_corner U
+			# if judge_second_floor_4_corner U
+			# # 	#完成第三层
+			# # if judge_cross_of_face D
+			# # 	return 
+			# # else
+			# # 	back_third_floor_cross U
+			# # end
+			# # else
+			# return
+			# else
+			# back_second_floor U#完成第二层的代码
+			# end
+			return
+		else
+			back_four_corner U#完成第一个四个角的代码
+		end
+	else
+		back_cross U #完成十字架的代码
+	end
+end
+end
+
 
 back_second_floor_son U
 puts @command[@init_command.length..@command.length]

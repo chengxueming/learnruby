@@ -16,9 +16,14 @@
 # 0.upto 4 do |i|
 #     p i 
 # end
-(1..3).each{|ele|
-	if ele == 1
-		next
-	end
-p ele
-}
+# a = {"a" => "abc"}
+# s = String.new(a["a"])
+# s[0],s[2] = s[2],s[0]
+# p "#{s},#{a}"
+# a = "abc"
+# t = false
+# a = "123" if t == true
+# p a
+m = {"a" =>1,"b" =>2}
+m["a"],m["b"] = m["b"],m["a"]
+p m
